@@ -10,7 +10,8 @@ def index():
 
 @post('/data')
 def get_data():
-    return page_processor.get_page_data()
+    page_title = request.forms.get("page_title")
+    return page_processor.get_page_data(page_title)
 
 if __name__ == '__main__':
     run(debug=True, port=80, reloader=True)
