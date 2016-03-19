@@ -8,9 +8,10 @@ import page_processor
 def index():
     return template("test")
 
-@post('/data')
+@route('/data')
 def get_data():
-    page_title = request.forms.get("page_title")
+    page_title = request.query.get("page_title")
+    print page_title
     return page_processor.get_page_data(page_title)
 
 if __name__ == '__main__':
