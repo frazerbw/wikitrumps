@@ -1,13 +1,16 @@
 # -*- coding: utf-8 -*-
 
-import urllib2
+from bottle import request, template, run, route, post
 
-from bottle import request, template, run, route
-from bs4 import BeautifulSoup
+import page_processor
 
 @route('/')
 def index():
-    return "Hello world!"
+    return template("test")
+
+@post('/data')
+def get_data():
+    return page_processor.get_page_data()
 
 if __name__ == '__main__':
     run(debug=True, port=80, reloader=True)
