@@ -89,16 +89,33 @@ Card.prototype.generateCardStats  = function() {
 	xPos = this.x + 0.5 + Math.round(this.cardWidth/2) - 120;
 	yPos = this.y + 0.5 + Math.round(this.cardHeight/2) + 150;
 
-	this.generateCardStatText(this.stat1Title, this.stat1Value, xPos, yPos);
-	this.generateCardStatText(this.stat2Title, this.stat2Value, xPos, yPos + 25);
-	this.generateCardStatText(this.stat3Title, this.stat3Value, xPos, yPos + 50);
-	this.generateCardStatText(this.stat4Title, this.stat4Value, xPos, yPos + 75);
+	this.generateCardStatText(1, this.stat1Title, this.stat1Value, xPos, yPos);
+	this.generateCardStatText(2, this.stat2Title, this.stat2Value, xPos, yPos + 25);
+	this.generateCardStatText(3, this.stat3Title, this.stat3Value, xPos, yPos + 50);
+	this.generateCardStatText(4, this.stat4Title, this.stat4Value, xPos, yPos + 75);
 }
 
-Card.prototype.generateCardStatText  = function(title, val, x, y) {
+Card.prototype.isHoverCardStat  = function(id, yPos) {
+	return this.isHover() && mousePosY > yPos - 10 && mousePosY < yPos + 15;
+}
+
+Card.prototype.generateCardStatText  = function(id, title, val, x, y) {
 	ctx.font = "18px Arial";
 	ctx.textAlign = "left";
-	ctx.fillStyle = '#000';
+
+	if (this.isHoverCardStat(id, y)) {
+		ctx.fillStyle="#000";
+		ctx.beginPath();
+		ctx.moveTo(x - 20.5, y - 15);
+		ctx.lineTo(x - 20.5 + 15, y - 5);
+		ctx.lineTo(x - 20.5, y + 5);
+		ctx.closePath();
+		ctx.fill();
+		ctx.fillStyle = '#000';
+	} else {
+		ctx.fillStyle = '#666';
+	}
+
 	ctx.fillText(title + ": " + val, x, y);
 }
 
