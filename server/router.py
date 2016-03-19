@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+from sys import argv
 from bottle import request, template, run, route, post
 
 import page_processor
@@ -14,4 +14,4 @@ def get_data():
     return page_processor.get_page_data(page_title)
 
 if __name__ == '__main__':
-    run(debug=True, port=80, reloader=True)
+    run(host='0.0.0.0', debug=True, port=argv[1], reloader=True)
