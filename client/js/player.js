@@ -5,6 +5,7 @@
 function Player(playerName, deck) {
 	this.playerName = playerName;
 	this.deck = deck;
+	this.deck.setPlayer(this);
 }
 
 Player.prototype.getDeck  = function() {

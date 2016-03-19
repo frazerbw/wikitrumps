@@ -1,0 +1,1 @@
+web: sh -c 'cd ./server/ && exec python router.py $PORT'

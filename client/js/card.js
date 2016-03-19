@@ -2,33 +2,31 @@
  * ...
  * @author Frazer Bennett Wilford
  */
-function Card(owner, articleName, url, x, y) {
+function Card(owner, articleName, url, statVals, x, y) {
 	this.owner = owner;
 	this.articleName = articleName;
+	this.startX = x;
+	this.startY = y;
 	this.x = x;
 	this.y = y;
 
 	this.hidden = false;
+	this.alpha = 1;
 
 	this.cardWidth = 350;
 	this.cardHeight = 500;
 
+	this.url = url;
 	this.cardImage = new Image();
 	this.cardImage.src = url;
 
-	this.stat1Title = "Page Popularity";
-	this.stat1Value = 1000;
-
-	this.stat2Title = "Number of Links";
-	this.stat2Value = 25;
-
-	this.stat3Title = "Number of Images";
-	this.stat3Value = 5;
-
-	this.stat4Title = "Number of Revisions";
-	this.stat4Value = 120;
+	this.statTitles = ["Page Popularity", "Longest Word", "Number of Images", "Number of Revisions"];
+	this.statVals = statVals;
 
 	this.hoverTolerance = 5;
+	this.lock = false;
+
+	this.highlightedStat = -1;
 }
 
 Card.prototype.toggle  = function() {
@@ -39,6 +37,8 @@ Card.prototype.update  = function(x) {
 }
 
 Card.prototype.render = function() {
+	ctx.globalAlpha = this.alpha;
+
 	this.generateCardBase();
 	if (!this.hidden) {
 	    this.generateCardTitle();
@@ -47,6 +47,8 @@ Card.prototype.render = function() {
   	} else {
   		this.generateOwnerName();
   	}
+
+  	ctx.globalAlpha = 1;
 };
 
 Card.prototype.generateCardBase  = function() {
@@ -89,10 +91,9 @@ Card.prototype.generateCardStats  = function() {
 	xPos = this.x + 0.5 + Math.round(this.cardWidth/2) - 120;
 	yPos = this.y + 0.5 + Math.round(this.cardHeight/2) + 150;
 
-	this.generateCardStatText(1, this.stat1Title, this.stat1Value, xPos, yPos);
-	this.generateCardStatText(2, this.stat2Title, this.stat2Value, xPos, yPos + 25);
-	this.generateCardStatText(3, this.stat3Title, this.stat3Value, xPos, yPos + 50);
-	this.generateCardStatText(4, this.stat4Title, this.stat4Value, xPos, yPos + 75);
+	for (var i = 0; i < this.statTitles.length; i++) {
+		this.generateCardStatText(i, this.statTitles[i], this.statVals[i], xPos, yPos + 25 * i);
+	}
 }
 
 Card.prototype.isHoverCardStat  = function(id, yPos) {
@@ -103,7 +104,13 @@ Card.prototype.generateCardStatText  = function(id, title, val, x, y) {
 	ctx.font = "18px Arial";
 	ctx.textAlign = "left";
 
-	if (this.isHoverCardStat(id, y)) {
+	if (this.lock) {
+		if (id == this.highlightedStat) {
+			ctx.fillStyle = '#900';
+		} else {
+			ctx.fillStyle = '#666';
+		}
+	} else if (this.isHoverCardStat(id, y)) {
 		ctx.fillStyle="#000";
 		ctx.beginPath();
 		ctx.moveTo(x - 20.5, y - 15);
@@ -126,7 +133,56 @@ Card.prototype.generateOwnerName = function() {
 	ctx.fillText(this.owner.getName(), this.x + this.cardWidth/2, this.y + this.cardHeight/2);
 }
 
+Card.prototype.getSelectedStatId = function() {
+	yPos = this.y + 0.5 + Math.round(this.cardHeight/2) + 150;
+
+	for (var i = 0; i < this.statTitles.length; i++) {
+		if (this.isHoverCardStat(i, yPos +  25 * i)) {
+			return i;
+		}
+	}
+
+	return -1;
+}
+
+Card.prototype.getStatVal = function(id) {
+	return this.statVals[id];
+}
+
+Card.prototype.isHidden = function() {
+	return this.hidden;
+};
+
 Card.prototype.isHover = function() {
 	return (mousePosX > this.x - this.hoverTolerance && mousePosX < this.x + this.cardWidth + this.hoverTolerance &&
 			mousePosY > this.y - this.hoverTolerance && mousePosY < this.y + this.cardHeight + this.hoverTolerance);
 };
+
+Card.prototype.getX = function() {
+	return this.x;
+};
+
+Card.prototype.getY = function() {
+	return this.y;
+};
+
+Card.prototype.setAlpha= function(alpha) {
+	this.alpha = alpha;
+};
+
+Card.prototype.setCords = function(x,y) {
+	this.x = x;
+	this.y = y;
+};
+
+Card.prototype.lockCard = function() {
+	this.lock = true;
+}
+
+Card.prototype.highlightStat = function(id) {
+	this.highlightedStat = id;
+}
+
+Card.prototype.copy = function(owner) {
+	return new Card(owner, this.articleName, this.url, this.statVals, this.startX, this.startY);
+}
