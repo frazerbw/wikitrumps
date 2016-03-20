@@ -33,7 +33,19 @@ function Card(owner, articleName, url, statVals, x, y) {
 
 	var thisClass = this;
 
-	$.ajax("https://frozen-wave-21193.herokuapp.com/data", {
+	// $.ajax("https://frozen-wave-21193.herokuapp.com/data", {
+ //            success: function(data) {
+ //                thisClass.statVals[1] = data.imageCount;
+ //                thisClass.statVals[0] = data.linkCount;
+ //                thisClass.statVals[2] = data.refCount;
+ //                thisClass.statVals[3] = data.id;
+ //                thisClass.cardImage.src = data.imageURL;
+ //            },
+ //            data: {
+ //                page_title: thisClass.articleName //" 'doge' as the default value to stop this breaking"
+ //            }
+ //    });
+    $.ajax("/data", {
             success: function(data) {
                 thisClass.statVals[1] = data.imageCount;
                 thisClass.statVals[0] = data.linkCount;

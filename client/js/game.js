@@ -34,11 +34,22 @@ var card12;
 var card21;
 var card22;
 
-var articles = ["Dream", "Beer", "Fox", "Knight", "Yoshi", "Pikachu", "School", "Duck", "Bean",
-				"Camel", "Doge", "Batman", "Chemistry", "Chicken", "Warrior", "Energy", "Cake", "Oasis",
-				"Apple", "Sun", "Moon", "Rifle", "Sword", "Shield", "Car", "Dragon", 
-				"Demon", "Angel", "God", "Cod", "Cave",
-				"Philosophy", "Water", "Ice", "Love", "Superman", "Britney Spears"]
+// var articles = ["Dream", "Beer", "Fox", "Knight", "Yoshi", "Pikachu", "School", "Duck", "Bean",
+// 				"Camel", "Doge", "Batman", "Chemistry", "Chicken", "Warrior", "Energy", "Cake", "Oasis",
+// 				"Apple", "Sun", "Moon", "Rifle", "Sword", "Shield", "Car", "Dragon", 
+// 				"Demon", "Angel", "God", "Cod", "Cave",
+// 				"Philosophy", "Water", "Ice", "Love", "Superman", "Britney Spears"]
+
+var articles;
+$.ajax("/random", {
+	async: false,
+	success: function(data) {
+		articles = data.page_titles;
+		articles = articles.map(function(element) {
+			return element.replace("_", " ");
+		});
+	}
+});
 
 // Runs when the page has finished loading
 if (document.getElementById) { window.onload=init; }

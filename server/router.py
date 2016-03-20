@@ -21,6 +21,11 @@ def get_data():
     print page_title
     return page_processor.get_page_data(page_title)
 
+@route('/random')
+def get_random_list():
+    page_list = page_processor.get_random_page_list(30)
+    return dict(page_titles=page_list)      
+
 @route('/<path:path>')
 def get_resources(path):
     return static_file(path, root="../client")
