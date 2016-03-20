@@ -36,8 +36,9 @@ def get_img_url(page_title):
     img_exists_obj = json.load(feed)
     img_names_list = find_recursive_dict_key(img_exists_obj, u"images")
     if isinstance(img_names_list, list):
-        img_name = img_names_list[0]["title"]
-        img_url_info_link = (u"https://en.wikipedia.org/w/api.php?action=query&titles=%s&prop=imageinfo&iiprop=url&format=json" % (urllib.quote(img_name)))
+        # Ensures utf-8 representation of characters are used
+        img_name = img_names_list[0]["title"].encode('utf8')
+        img_url_info_link = (u"https://en.wikipedia.org/w/api.php?action=query&titles=%s&prop=imageinfo&iiprop=url&format=json" % (urllib.quote(img_name, safe='')))
         img_req = urllib2.Request(img_url_info_link, None, headers)
         img_link_feed = urllib2.urlopen(img_req)
         img_url_cont_obj = json.load(img_link_feed)
@@ -61,7 +62,12 @@ def get_page_id(page_title):
 def get_page_data(page_title):
     address = u"https://en.wikipedia.org/wiki/%s" % page_title
     request = urllib2.Request(address, None, headers)
-    page = urllib2.urlopen(request).read()
+    try:
+        page = urllib2.urlopen(request).read()
+    except urllib2.HTTPError: # Page not found
+        return dict(imageCount=-1, linkCount=-1, refCount=-1,
+                imageURL=u"https://usmentor.qbcontent.com/wp-content/uploads/2014/07/wikipedia-logo1.jpg",
+                id=-1)        
     soup = BeautifulSoup(page, "html.parser")
     num_of_links = get_num_links(soup)
     num_of_imgs = get_num_imgs(soup)

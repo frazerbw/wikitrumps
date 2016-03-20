@@ -42,7 +42,9 @@ class Test(unittest.TestCase):
                    "query":{"pages":{"-1":{"ns":0,"title":"Mr. Beans","missing":""}}}}
         self.assertFalse(page_processor.find_recursive_dict_key(trouble, "images"))
     
-    def test_get_img_url(self):
-        pass
+    def test_get_tricky_img_url(self):
+        self.assertEqual(page_processor.get_img_url(u"Dog"),
+                         "https://upload.wikimedia.org/wikipedia/commons/b/bc/Aleria%2C_Rhyton%2C_t%C3%AAte_de_chien.jpg")
+    
 if __name__ == "__main__":
     unittest.main()
