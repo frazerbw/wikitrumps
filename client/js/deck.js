@@ -4,7 +4,7 @@
  */
 
 function Deck(x, y) {
-	this.title = "test";
+	this.owner = "test";
 	this.x = x;
 	this.y = y;
 
@@ -16,8 +16,8 @@ function Deck(x, y) {
 }
 
 Deck.prototype.draw  = function(card) {
-	card = this.cards[this.cards.length - 1];
-	this.cards.pop();
+	card = this.cards[1];
+	this.cards.shift();
 	return card;
 }
 
@@ -30,6 +30,12 @@ Deck.prototype.remove  = function(card) {
 		if (this.cards[i] == card) {
 			this.cards.splice(i, 1);
 		}
+	}
+}
+
+Deck.prototype.log = function() {
+	for (var i = 0; i < this.cards.length; i++) {
+		console.log(this.cards[i])
 	}
 }
 
@@ -62,7 +68,7 @@ Deck.prototype.render = function() {
 		ctx.font = "14px Arial";
 		ctx.textAlign = "center";
 		ctx.fillStyle = '#000';
-		ctx.fillText(this.title, this.x + 0.5 + 2 * this.cards.length + this.cardWidth/2 - 1,
+		ctx.fillText(this.owner.getName(), this.x + 0.5 + 2 * this.cards.length + this.cardWidth/2 - 1,
 					 this.y - 1 * this.cards.length + this.cardHeight/2 + 4);
 	}
 
@@ -72,7 +78,23 @@ Deck.prototype.render = function() {
 	ctx.fillText("card count: " + this.cards.length, this.x + 25, this.y + 90);
 }
 
+Deck.prototype.setPlayer  = function(owner) {
+	this.owner = owner;
+}
+
 Deck.prototype.isHover = function() {
 	return (mousePosX > this.x - this.hoverTolerance && mousePosX < this.x + this.cardWidth + this.hoverTolerance + this.cards.length * 2&&
 			mousePosY > this.y - this.hoverTolerance && mousePosY < this.y + this.cardHeight + this.hoverTolerance + this.cards.length * 2);
 };
+
+Deck.prototype.getX = function() {
+	return this.x;
+}
+
+Deck.prototype.getY = function() {
+	return this.y;
+}
+
+Deck.prototype.isEmpty = function() {
+	return this.cards.length == 0;
+}
