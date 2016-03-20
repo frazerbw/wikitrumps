@@ -16,7 +16,7 @@ def index():
 
 @route('/data')
 def get_data():
-    response.set_header("Access-Control-Allow-Origin", "http://frozen-wave-21193.herokuapp.com/*")
+    response.set_header("Access-Control-Allow-Origin", "http://frozen-wave-21193.herokuapp.com/")
     page_title = request.query.get("page_title")
     print page_title
     return page_processor.get_page_data(page_title)
