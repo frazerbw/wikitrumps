@@ -34,6 +34,12 @@ var card12;
 var card21;
 var card22;
 
+var articles = ["Dream", "Beer", "Fox", "Knight", "Yoshi", "Pikachu", "School", "Duck", "Bean",
+				"Camel", "Doge", "Batman", "Chemistry", "Chicken", "Warrior", "Energy", "Cake", "Oasis",
+				"Apple", "Sun", "Moon", "Rifle", "Sword", "Shield", "Car", "Dragon", 
+				"Demon", "Angel", "God", "Cod", "Cave",
+				"Philosophy", "Water", "Ice", "Love", "Superman", "Britney Spears"]
+
 // Runs when the page has finished loading
 if (document.getElementById) { window.onload=init; }
 
@@ -63,32 +69,43 @@ function setupMenu() {
 
 	currentPlayer = player1;
 
-	card11 = new Card(player1, "Dream", "", [0,0,0], 150, 30);
-	card12 = new Card(player1, "Beer", "", [0,0,0], 525, 30);
-	card21 = new Card(player2, "Fox", "", [0,0,0], 150, 30);
-	card22 = new Card(player2, "Knight", "", [0,0,0], 525, 30);
+	card11 = new Card(player1, getArticleName() , "", [0,0,0], 150, 30);
+	card12 = new Card(player1, getArticleName() , "", [0,0,0], 525, 30);
+	card21 = new Card(player2, getArticleName() , "", [0,0,0], 150, 30);
+	card22 = new Card(player2, getArticleName() , "", [0,0,0], 525, 30);
 	card22.toggle();
 
 	player1.getDeck().add(card11);
 	player1.getDeck().add(card12);
-	player1.getDeck().add(new Card(player1, "Hacking", "", [0,0,0,0], 525, 30));
-	player1.getDeck().add(new Card(player1, "Yoshi", "", [0,0,0,0], 525, 30));
-	player1.getDeck().add(new Card(player1, "Pikachu", "", [0,0,0,0], 525, 30));
-	player1.getDeck().add(new Card(player1, "School", "", [0,0,0,0], 525, 30));
-	player1.getDeck().add(new Card(player1, "Duck", "", [0,0,0,0], 525, 30));
-	player1.getDeck().add(new Card(player1, "Bean", "", [0,0,0,0], 525, 30));
+	player1.getDeck().add(new Card(player1, getArticleName() , "", [0,0,0,0], 525, 30));
+	player1.getDeck().add(new Card(player1, getArticleName() , "", [0,0,0,0], 525, 30));
+	player1.getDeck().add(new Card(player1, getArticleName() , "", [0,0,0,0], 525, 30));
+	player1.getDeck().add(new Card(player1, getArticleName() , "", [0,0,0,0], 525, 30));
+	player1.getDeck().add(new Card(player1, getArticleName() , "", [0,0,0,0], 525, 30));
+	player1.getDeck().add(new Card(player1, getArticleName() , "", [0,0,0,0], 525, 30));
 
 	player2.getDeck().add(card22);
 	player2.getDeck().add(card21);
-	player2.getDeck().add(new Card(player2, "Camel", "", [0,0,0,0], 525, 30));
-	player2.getDeck().add(new Card(player2, "Doge", "", [0,0,0,0], 525, 30));
-	player2.getDeck().add(new Card(player2, "Batman", "", [0,0,0,0], 525, 30));
-	player2.getDeck().add(new Card(player2, "Chemistry", "", [0,0,0,0], 525, 30));
-	player2.getDeck().add(new Card(player2, "Chicken", "", [0,0,0,0], 525, 30));
-	player2.getDeck().add(new Card(player2, "Warrior", "", [0,0,0,0], 525, 30));
+	player2.getDeck().add(new Card(player2, getArticleName() , "", [0,0,0,0], 525, 30));
+	player2.getDeck().add(new Card(player2, getArticleName() , "", [0,0,0,0], 525, 30));
+	player2.getDeck().add(new Card(player2, getArticleName() , "", [0,0,0,0], 525, 30));
+	player2.getDeck().add(new Card(player2, getArticleName() , "", [0,0,0,0], 525, 30));
+	player2.getDeck().add(new Card(player2, getArticleName() , "", [0,0,0,0], 525, 30));
+	player2.getDeck().add(new Card(player2, getArticleName() , "", [0,0,0,0], 525, 30));
 
 	activeCard1 = card11;
 	activeCard2 = card22;
+
+	player1.getDeck().log();
+	player2.getDeck().log();
+}
+
+function getArticleName() {
+	id = Math.floor(articles.length * Math.random());
+	article = articles[id];
+	articles.splice(id, 1);
+
+	return article;
 }
 
 function destroyMenu() {

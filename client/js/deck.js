@@ -33,6 +33,12 @@ Deck.prototype.remove  = function(card) {
 	}
 }
 
+Deck.prototype.log = function() {
+	for (var i = 0; i < this.cards.length; i++) {
+		console.log(this.cards[i])
+	}
+}
+
 Deck.prototype.shuffle = function() {
     var j, x, i;
     for (i = this.deck.length; i; i -= 1) {

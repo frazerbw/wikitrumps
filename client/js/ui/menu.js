@@ -4,7 +4,7 @@
  */
 
 function Menu() {
-	this.delayMax = 240;
+	this.delayMax = 500;
 	this.delay = 0;
 }
 
