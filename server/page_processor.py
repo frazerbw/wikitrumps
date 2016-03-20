@@ -20,36 +20,46 @@ def get_num_references(soup):
     reference_list = soup.select("ol.references > li")
     return len(reference_list)
 
-def find_img_key(d, key):
-    reduced_dict = d["query"]["pages"] # {"4269567":{..., "images": [{...},...,{...}]}}
-    reduced_dict = reduced_dict.itervalues().next() # {..., "images": [{...}, ..., {...}]}
+def find_recursive_dict_key(d, key):
+    reduced_dict = d[u"query"][u"pages"] # {"4269567":{"images": [{...},...,{...}]}}
+    reduced_dict = reduced_dict.itervalues().next() # {"images": [{...}, ..., {...}]}
     if reduced_dict.has_key(key):
         return reduced_dict[key]
     else:
         return None
 
 def get_img_url(page_title):
-    img_exists_url = ("https://en.wikipedia.org/w/api.php?action=query&"+
-                      "titles=%s&prop=images&format=json" % (urllib.quote(page_title)))
+    img_exists_url = (u"https://en.wikipedia.org/w/api.php?action=query&"+
+                      u"titles=%s&prop=images&format=json" % (urllib.quote(page_title)))
     request = urllib2.Request(img_exists_url, None, headers)
     feed = urllib2.urlopen(request)
     img_exists_obj = json.load(feed)
-    img_names_list = find_img_key(img_exists_obj, "images")
+    img_names_list = find_recursive_dict_key(img_exists_obj, u"images")
     if isinstance(img_names_list, list):
         img_name = img_names_list[0]["title"]
-        img_url_info_link = ("https://en.wikipedia.org/w/api.php?action=query&"+
-                             "titles=%s&prop=imageinfo&iiprop=url&format=json" % (urllib.quote(img_name)))
+        img_url_info_link = (u"https://en.wikipedia.org/w/api.php?action=query&titles=%s&prop=imageinfo&iiprop=url&format=json" % (urllib.quote(img_name)))
         img_req = urllib2.Request(img_url_info_link, None, headers)
         img_link_feed = urllib2.urlopen(img_req)
         img_url_cont_obj = json.load(img_link_feed)
-        img_url = find_img_key(img_url_cont_obj, "imageinfo")[0]["url"]
+        img_url = find_recursive_dict_key(img_url_cont_obj, u"imageinfo")[0][u"url"]
           
     else: # No appropriate imgs found, returns link to wikipedia logo img 
-        img_url = "https://usmentor.qbcontent.com/wp-content/uploads/2014/07/wikipedia-logo1.jpg"
+        img_url = u"https://usmentor.qbcontent.com/wp-content/uploads/2014/07/wikipedia-logo1.jpg"
     return img_url
 
+def get_page_id(page_title):
+    id_exists_url = (u"https://en.wikipedia.org/w/api.php?action=query&"+
+                      u"titles=%s&prop=images&format=json" % (urllib.quote(page_title)))
+    request = urllib2.Request(id_exists_url, None, headers)
+    feed = urllib2.urlopen(request)
+    id_exists_obj = json.load(feed)
+    if find_recursive_dict_key(id_exists_obj, u"pageid"):
+        return find_recursive_dict_key(id_exists_obj, u"pageid")
+    else:
+        return -1 # id not found
+    
 def get_page_data(page_title):
-    address = "https://en.wikipedia.org/wiki/%s" % page_title
+    address = u"https://en.wikipedia.org/wiki/%s" % page_title
     request = urllib2.Request(address, None, headers)
     page = urllib2.urlopen(request).read()
     soup = BeautifulSoup(page, "html.parser")
@@ -57,8 +67,9 @@ def get_page_data(page_title):
     num_of_imgs = get_num_imgs(soup)
     num_of_refs = get_num_references(soup)
     img_url = get_img_url(page_title)
+    page_id = get_page_id(page_title)
     return dict(imageCount=num_of_imgs, linkCount=num_of_links,
-                refCount=num_of_refs, imageURL=img_url)
+                refCount=num_of_refs, imageURL=img_url, id=page_id) 
 
 def writePageHTML(page):
     """Quick utility function for writing a scraped page into a html file."""
@@ -68,4 +79,4 @@ def writePageHTML(page):
         p.write(page)
 
 if __name__ == "__main__":
-    print get_img_url("Mr._Bean")
+    print get_img_url(u"dog")
