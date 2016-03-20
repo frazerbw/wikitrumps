@@ -4,12 +4,17 @@
 <head>
 	<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
 	<meta content="utf-8" http-equiv="encoding">
+	<link href='https://fonts.googleapis.com/css?family=Roboto:300,400,500' rel='stylesheet' type='text/css'>
+	<link rel="stylesheet" type="text/css" href="css/reset.css">
+	<link rel="stylesheet" type="text/css" href="css/style.css">
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
 	<script src="js/lib/render-list.js"></script> 
 	<script src="js/ui/background.js"></script> 
 	<script src="js/ui/draw-card.js"></script> 
 	<script src="js/ui/shake-card.js"></script> 
 	<script src="js/ui/fly-off-card.js"></script> 
 	<script src="js/ui/text-alert.js"></script> 
+	<script src="js/ui/menu.js"></script>
 	<script src="js/deck.js"></script>
 	<script src="js/card.js"></script> 
 	<script src="js/player.js"></script> 
@@ -18,8 +23,22 @@
 
 
 <body>
-	<canvas id="canvas" width="1000" height="650" style="border:1px solid #000000;">
-	Your browser does not support the HTML5 canvas tag.
-	</canvas>
+<div id="wrapper">
+
+	<div id="header">
+	<h1> Wiki Trumps </h1>
+	</div>
+
+	<div id="canvas-body">
+		<canvas id="canvas" width="1000" height="650" >
+		Your browser does not support the HTML5 canvas tag.
+		</canvas>
+	</div>
+
+	<div id="footer">
+	<p> Made for Hack Sheffield 2015 </p>
+	<p> Frazer Bennett Wilford (client) / Darren Vong (server) </p>
+	</div>
+</div>
 </body>
 </html>

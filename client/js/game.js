@@ -25,6 +25,15 @@ var mousePosY;
 var flyOffDelay = 60;
 var flyOffSpeed = 10;
 
+var menu;
+var isMenuActive;
+
+// For preloading
+var card11;
+var card12;
+var card21;
+var card22;
+
 // Runs when the page has finished loading
 if (document.getElementById) { window.onload=init; }
 
@@ -36,80 +45,113 @@ function init() {
 	canvas.addEventListener("click", onClick, false);
 
 	// Creates the game objects
-	setup();
+	setupMenu();
 
 	// Begins the gameloop
 	setInterval(function() {update()}, 15);
 }
 
-function setup() {
+function setupMenu() {
+	isMenuActive = true;
+	menu = new Menu();
 	list.add(new Background());
+	list.add(menu);
 
+	// FOR PRELOADING
 	player1 = new Player("Frazer", new Deck(50, canvas.height - 100));
 	player2 = new Player("Darren", new Deck(canvas.width - 100, canvas.height - 100));
 
 	currentPlayer = player1;
 
-	card11 = new Card(player1, "Fox", "http://media.mnn.com/assets/images/2015/09/01-zen-fox.jpg", [26,13,12,0], 150, 30);
-	list.add(card11);
-
-	card12 = new Card(player1, "Doge", "https://pbs.twimg.com/profile_images/378800000822867536/3f5a00acf72df93528b6bb7cd0a4fd0c.jpeg", [82,11,16,0], 525, 30);
-
-	card21 = new Card(player2, "Fox", "http://media.mnn.com/assets/images/2015/09/01-zen-fox.jpg", [26,13,12,0], 150, 30);
-
-	card22 = new Card(player2, "Doge", "https://pbs.twimg.com/profile_images/378800000822867536/3f5a00acf72df93528b6bb7cd0a4fd0c.jpeg", [82,11,16,0], 525, 30);
-	list.add(card22);
+	card11 = new Card(player1, "Dream", "", [0,0,0], 150, 30);
+	card12 = new Card(player1, "Beer", "", [0,0,0], 525, 30);
+	card21 = new Card(player2, "Fox", "", [0,0,0], 150, 30);
+	card22 = new Card(player2, "Knight", "", [0,0,0], 525, 30);
 	card22.toggle();
 
 	player1.getDeck().add(card11);
 	player1.getDeck().add(card12);
-	list.add(player1.getDeck());
+	player1.getDeck().add(new Card(player1, "Hacking", "", [0,0,0,0], 525, 30));
+	player1.getDeck().add(new Card(player1, "Yoshi", "", [0,0,0,0], 525, 30));
+	player1.getDeck().add(new Card(player1, "Pikachu", "", [0,0,0,0], 525, 30));
+	player1.getDeck().add(new Card(player1, "School", "", [0,0,0,0], 525, 30));
+	player1.getDeck().add(new Card(player1, "Duck", "", [0,0,0,0], 525, 30));
+	player1.getDeck().add(new Card(player1, "Bean", "", [0,0,0,0], 525, 30));
 
 	player2.getDeck().add(card22);
 	player2.getDeck().add(card21);
-	list.add(player2.getDeck());
+	player2.getDeck().add(new Card(player2, "Camel", "", [0,0,0,0], 525, 30));
+	player2.getDeck().add(new Card(player2, "Doge", "", [0,0,0,0], 525, 30));
+	player2.getDeck().add(new Card(player2, "Batman", "", [0,0,0,0], 525, 30));
+	player2.getDeck().add(new Card(player2, "Chemistry", "", [0,0,0,0], 525, 30));
+	player2.getDeck().add(new Card(player2, "Chicken", "", [0,0,0,0], 525, 30));
+	player2.getDeck().add(new Card(player2, "Warrior", "", [0,0,0,0], 525, 30));
 
 	activeCard1 = card11;
 	activeCard2 = card22;
 }
 
+function destroyMenu() {
+	list = new RenderList();
+	isMenuActive = false;
+}
+
+function setup() {
+	list.add(new Background());
+	list.add(card22);
+	list.add(card11);
+	list.add(player1.getDeck());
+	list.add(player2.getDeck());
+	activeCard1 = card11;
+	activeCard2 = card22;
+}
+
 function update() {
-	if (player1.getDeck().isEmpty() || player2.getDeck().isEmpty()) {
-		list.remove(activeCard1);
-		list.remove(activeCard2);
-		aniEvent = [];
-	} else {
-		// Updates animation events
-		for (var i = 0; i < aniEvent.length; i++) {
-			aniEvent[i].update();
-			if (aniEvent[i].isFinished()) {
-				aniEvent.splice(i, 1);
+	if (!isMenuActive) {
+		if (player1.getDeck().isEmpty() || player2.getDeck().isEmpty()) {
+			list.remove(activeCard1);
+			list.remove(activeCard2);
+			aniEvent = [];
+		} else {
+			// Updates animation events
+			for (var i = 0; i < aniEvent.length; i++) {
+				aniEvent[i].update();
+				if (aniEvent[i].isFinished()) {
+					aniEvent.splice(i, 1);
+				}
 			}
 		}
-	}
+	} 
 
 	list.render();
 }
 
 // Handles click events
 function onClick(e) {
-	if (activeCard1.isHover() && currentPlayer == player1) {
-		selectedId = activeCard1.getSelectedStatId();
-		if (selectedId != -1 && !activeCard1.isHidden()) {
-			playStat(selectedId);
-		} 
-	} else if (activeCard2.isHover() && currentPlayer == player2) {
-		selectedId = activeCard2.getSelectedStatId();
-		if (selectedId != -1 && !activeCard2.isHidden()) {
-			playStat(selectedId);
-		} 
-	}
+	if (isMenuActive) {
+		if (menu.isHover()) {
+			destroyMenu();
+			setup();
+		}
+	} else {
+		if (activeCard1.isHover() && currentPlayer == player1) {
+			selectedId = activeCard1.getSelectedStatId();
+			if (selectedId != -1 && !activeCard1.isHidden()) {
+				playStat(selectedId);
+			} 
+		} else if (activeCard2.isHover() && currentPlayer == player2) {
+			selectedId = activeCard2.getSelectedStatId();
+			if (selectedId != -1 && !activeCard2.isHidden()) {
+				playStat(selectedId);
+			} 
+		}
 
-	if (player1.getDeck().isHover()) {
-		player1.getDeck().draw();
-	}
-	if (player2.getDeck().isHover()) {
-		player2.getDeck().draw();
+		if (player1.getDeck().isHover()) {
+			player1.getDeck().draw();
+		}
+		if (player2.getDeck().isHover()) {
+			player2.getDeck().draw();
+		}
 	}
 }
 

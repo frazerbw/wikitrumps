@@ -20,13 +20,31 @@ function Card(owner, articleName, url, statVals, x, y) {
 	this.cardImage = new Image();
 	this.cardImage.src = url;
 
-	this.statTitles = ["Page Popularity", "Longest Word", "Number of Images", "Number of Revisions"];
+	this.cardBase = new Image();
+	this.cardBase.src = "imgs/Wiki_background.jpg";
+
+	this.statTitles = ["Number of Links", "Number of Images", "Number of References", "Id Value"];
 	this.statVals = statVals;
 
 	this.hoverTolerance = 5;
 	this.lock = false;
 
 	this.highlightedStat = -1;
+
+	var thisClass = this;
+
+	$.ajax("https://frozen-wave-21193.herokuapp.com/data", {
+            success: function(data) {
+                thisClass.statVals[1] = data.imageCount;
+                thisClass.statVals[0] = data.linkCount;
+                thisClass.statVals[2] = data.refCount;
+                thisClass.statVals[3] = data.id;
+                thisClass.cardImage.src = data.imageURL;
+            },
+            data: {
+                page_title: thisClass.articleName //" 'doge' as the default value to stop this breaking"
+            }
+    });
 }
 
 Card.prototype.toggle  = function() {
@@ -52,16 +70,15 @@ Card.prototype.render = function() {
 };
 
 Card.prototype.generateCardBase  = function() {
-	ctx.beginPath();
-    ctx.rect(this.x + 0.5, this.y + 0.5, this.cardWidth, this.cardHeight);
-
     if (this.isHover()) {
     	ctx.fillStyle = '#DDD';
     } else {
 		ctx.fillStyle = '#EEE';
     }
 
-    ctx.fill();
+    ctx.drawImage(this.cardBase, this.x + 0.5, this.y + 0.5, this.cardWidth, this.cardHeight);
+    ctx.beginPath();
+    ctx.rect(this.x + 0.5, this.y + 0.5, this.cardWidth, this.cardHeight);
     ctx.stroke();
 }
 
