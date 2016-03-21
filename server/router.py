@@ -16,15 +16,10 @@ def index():
 
 @route('/data')
 def get_data():
-    response.set_header("Access-Control-Allow-Origin", "http://frozen-wave-21193.herokuapp.com/")
+    response.set_header("Access-Control-Allow-Origin", "*")
     page_title = request.query.get("page_title")
     print page_title
     return page_processor.get_page_data(page_title)
-
-@route('/random')
-def get_random_list():
-    page_list = page_processor.get_random_page_list(30)
-    return dict(page_titles=page_list)      
 
 @route('/<path:path>')
 def get_resources(path):
