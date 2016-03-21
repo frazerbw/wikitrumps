@@ -7,6 +7,8 @@ import json
 
 from bs4 import BeautifulSoup
 
+from utils import find_recursive_dict_key
+
 AGENT_NAME = "Mozilla/5.0 (Windows NT 6.3; WOW64; rv:42.0) Gecko/20100101 Firefox/42.0"
 headers = {"User-Agent": AGENT_NAME}
 
@@ -19,14 +21,6 @@ def get_num_imgs(soup):
 def get_num_references(soup):
     reference_list = soup.select("ol.references > li")
     return len(reference_list)
-
-def find_recursive_dict_key(d, key):
-    reduced_dict = d[u"query"][u"pages"] # {"4269567":{"images": [{...},...,{...}]}}
-    reduced_dict = reduced_dict.itervalues().next() # {"images": [{...}, ..., {...}]}
-    if reduced_dict.has_key(key):
-        return reduced_dict[key]
-    else:
-        return None
 
 def get_img_url(page_title):
     img_exists_url = (u"https://en.wikipedia.org/w/api.php?action=query&"+
@@ -48,21 +42,6 @@ def get_img_url(page_title):
         img_url = u"https://usmentor.qbcontent.com/wp-content/uploads/2014/07/wikipedia-logo1.jpg"
     return img_url
 
-def get_random_page_list(target_size):
-    random_url = u"https://en.wikipedia.org/wiki/Special:Random"
-    page_list = []
-    num_of_titles = 0
-    while num_of_titles != target_size:
-        request = urllib2.Request(random_url, None, headers)
-        result_page_url = urllib2.urlopen(request).geturl()
-        title = result_page_url.split("/")[-1]
-        if len(title) > 30:
-            continue
-        else:
-            page_list.append(title)
-            num_of_titles += 1
-    return page_list
-
 def get_page_id(page_title):
     id_exists_url = (u"https://en.wikipedia.org/w/api.php?action=query&"+
                       u"titles=%s&prop=images&format=json" % (urllib.quote(page_title)))
@@ -75,9 +54,9 @@ def get_page_id(page_title):
         return -1 # id not found
     
 def get_page_data(page_title):
-    address = u"https://en.wikipedia.org/wiki/%s" % page_title
-    request = urllib2.Request(address, None, headers)
     try:
+        address = u"https://en.wikipedia.org/wiki/%s" % page_title
+        request = urllib2.Request(address, None, headers)
         page = urllib2.urlopen(request).read()
     except urllib2.HTTPError: # Page not found
         return dict(imageCount=-1, linkCount=-1, refCount=-1,
@@ -91,13 +70,3 @@ def get_page_data(page_title):
     page_id = get_page_id(page_title)
     return dict(imageCount=num_of_imgs, linkCount=num_of_links,
                 refCount=num_of_refs, imageURL=img_url, id=page_id)
-
-def writePageHTML(page):
-    """Quick utility function for writing a scraped page into a html file."""
-    soup = BeautifulSoup(page, "html.parser")
-    page = soup.prettify('utf-8')
-    with open("page.html", "wb") as p:
-        p.write(page)
-
-if __name__ == "__main__":
-    print get_random_page_list(2)

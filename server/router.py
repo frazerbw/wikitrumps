@@ -6,7 +6,8 @@ from sys import argv
 from bottle import request, template, run, route, post, static_file, TEMPLATE_PATH,\
     response
 
-import page_processor
+import page_data_extractor
+import page_title_generator
 
 TEMPLATE_PATH.append('../client')
 
@@ -19,7 +20,12 @@ def get_data():
     response.set_header("Access-Control-Allow-Origin", "*")
     page_title = request.query.get("page_title")
     print page_title
-    return page_processor.get_page_data(page_title)
+    return page_data_extractor.get_page_data(page_title)
+
+@route('/random')
+def get_random_list():
+    page_list = page_title_generator.get_random_page_list(30)
+    return dict(page_titles=page_list)
 
 @route('/<path:path>')
 def get_resources(path):
