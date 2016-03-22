@@ -6,7 +6,7 @@ from sys import argv
 from bottle import request, template, run, route, post, static_file, TEMPLATE_PATH,\
     response
 
-import page_processor
+import page_data_extractor
 
 TEMPLATE_PATH.append('../client')
 
@@ -19,7 +19,7 @@ def get_data():
     response.set_header("Access-Control-Allow-Origin", "*")
     page_title = request.query.get("page_title")
     print page_title
-    return page_processor.get_page_data(page_title)
+    return page_data_extractor.get_page_data(page_title)
 
 @route('/<path:path>')
 def get_resources(path):
